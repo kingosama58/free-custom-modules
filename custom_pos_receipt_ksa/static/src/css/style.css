@@ -1,0 +1,38 @@
+.company-name {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 7px;
+
+    }
+.company-address {
+    text-align:center;
+    font-size:16px;
+}
+.list-1 {
+    display: flex;
+    font-size: 13px;
+    justify-content: space-between;
+}
+.list-2 {
+    display: flex;
+    font-size: 13px;
+    justify-content: space-between;
+}
+.list-3 {
+    display: flex;
+    font-size: 13px;
+    justify-content: space-between;
+}
+.orderline-label-en {
+    display:flex;
+    font-size: 13px;
+    justify-content: space-between;
+}
+.invisible {
+    display: none;
+}
+.pos-receipt-qrcode {
+    display:flex;
+    justify-content: center;
+}

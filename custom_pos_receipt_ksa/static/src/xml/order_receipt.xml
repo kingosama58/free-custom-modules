@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="ksa_custom_pos_receipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//div[@class='pos-receipt p-2']" position="replace">
+            <div class="pos-receipt p-2" style="width:82MM;direction:ltr;margin:0">
+<!--                <ReceiptHeader data="props.data.headerData" />-->
+                <div class="pos-receipt-company-logo">
+                    <img t-attf-src="/web/image?model=res.company&amp;id={{props.data.headerData.company.id}}&amp;field=logo" alt="Logo" class="pos-receipt-logo"/>
+                </div>
+
+
+                <div class="d-flex flex-column align-items-center">
+                    <div class="pos-receipt-contact">
+                        <div class="company-name">
+                            <t t-if="props.data.headerData.company">
+                                <t t-esc="props.data.headerData.company.name"/>
+                            </t>
+                        </div>
+
+                        <div class="company-address">
+                            <div t-if="props.data.headerData.company.street" t-esc="props.data.headerData.company.street" />
+                            <div t-if="props.data.headerData.company.state_id" t-esc="props.data.headerData.company.state_id.name" />
+                            <div t-if="props.data.headerData.company.country_id" t-esc="props.data.headerData.company.country_id.name" />
+                            <div t-if="props.data.headerData.company.phone" t-esc="props.data.headerData.company.phone" />
+                            <div t-if="props.data.headerData.company.website" t-esc="props.data.headerData.company.website" />
+                            <div t-if="props.data.headerData.company.vat" t-esc="props.data.headerData.company.vat" />
+                        </div>
+                        <div style="text-align:center;font-size:16px;margin-top:5px;margin-bottom:5px;">
+                            <span>-Simplified Invoice / فاتورة ضريبية مبسطة-</span>
+                        </div>
+                        <ul class="list-1">
+                            <il>Invoice Num:</il>
+                            <il><t t-esc="props.data.name"/></il>
+                            <il style="direction:rtl;">رقم الفاتورة:</il>
+                        </ul>
+                        <ul class="list-2">
+                            <il>Date:</il>
+                            <il><t t-esc="props.data.date"/></il>
+                            <il style="direction:rtl;">التاريخ:</il>
+                        </ul>
+                        <ul class="cashier" >
+                            <il>Cashier:</il>
+                            <il><t t-esc="props.data.headerData.cashier"/></il>
+                            <il style="direction:rtl;">الكاشير:</il>
+                        </ul>
+                        <h1 class="tracking-number text-center" style="font-size: 100px" t-if="props.data.trackingNumber and props.data.bigTrackingNumber" t-esc="props.data.trackingNumber" />
+                        <div style="border-bottom: 1px solid #000; margin: 5px 0;"></div>
+                        <div class="customer-information">
+                            <!-- Customer Name -->
+                            <ul class="list-3">
+                                <li>Client:</li>
+                                <li>
+                                    <t t-if="props.data.headerData.partner">
+                                        <t t-esc="props.data.headerData.partner.name" />
+                                    </t>
+                                    <t t-else="">Customer / زبون</t>
+                                </li>
+                                <li style="direction:rtl;">العميل:</li>
+                            </ul>
+                            <ul class="list-3">
+                                <li>Phone:</li>
+                                <li>
+                                    <t t-if="props.data.headerData.partner">
+                                        <t t-esc="props.data.headerData.partner.phone" />
+                                    </t>
+                                    <t t-else="">N/A</t>
+                                </li>
+                                <li style="direction:rtl;">الهاتف:</li>
+                            </ul>
+                            <ul class="list-3">
+                                <li>Address:</li>
+                                <li>
+                                    <t t-if="props.data.headerData.partner">
+                                        <t t-esc="props.data.headerData.partner.street" />
+                                    </t>
+                                    <t t-else="">N/A</t>
+                                </li>
+                                <li style="direction:rtl;">العنوان:</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div style="border-bottom: 1px solid #000; margin: 5px 0;"></div>
+                <div class="orderline-orderline">
+                    <table class="orderline-table" style="width: 100%; border-collapse: collapse;">
+                        <!-- Table Headers -->
+                        <thead>
+                            <tr>
+                                <!-- English and Arabic labels combined for clarity -->
+                                <th style="width: 40%; border-bottom: 1px solid #ddd; font-size: 11px; font-weight: bold; text-align: center;">
+                                    Item / الصنف
+                                </th>
+                                <th style="width: 15%; border-bottom: 1px solid #ddd; font-size: 11px; font-weight: bold; text-align: center;">
+                                    Price / السعر
+                                </th>
+                                <th style="width: 10%; border-bottom: 1px solid #ddd; font-size: 11px; font-weight: bold; text-align: center;">
+                                    QTY / الكمية
+                                </th>
+                                <th style="width: 20%; border-bottom: 1px solid #ddd; font-size: 11px; font-weight: bold; text-align: center;">
+                                    Total / إجمالي
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="props.data.orderlines or []" t-as="line" t-key="line.id or line.productName or index">
+                                <tr style="text-align: center; border-bottom: 1px solid #ddd; font-size: 12px;margin-top:5px;padding-top:5px;">
+                                    <td style="width: 40%;"><t t-esc="line.productName or 'N/A'"/></td>
+                                    <td style="width: 15%;"><t t-esc="line.unitPrice or '0.00'"/></td>
+                                    <td style="width: 10%;">
+                                        <t t-esc="line.qty or '1'"/>
+
+                                    </td>
+                                    <td style="width: 20%;"><t t-esc="line.price or '0.00'"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="invoice-summary">
+                    <div style="text-align:center;"><span style="font-size:22px;text-align:center;">---------------------------------------</span></div>
+                </div>
+                <div>
+                    <t t-if="!props.basic_receipt">
+                <div t-if="props.data.tax_details.length > 0" class="pos-receipt-taxes">
+                    <div class="d-flex">
+                        <span t-if="showTaxGroupLabels" class="me-2" style="visibility: hidden;">A</span>
+                        <span class="fw-bolder">الاجمالي قبل الضريبة</span>
+                        <span t-esc="props.formatCurrency(props.data.total_without_tax)" class="ms-auto"/>
+                    </div>
+
+                    <div t-foreach="props.data.tax_details" t-as="tax" t-key="tax.id" class="d-flex">
+                        <t t-if="showTaxGroupLabels">
+                            <span t-if="tax.tax_group_id.pos_receipt_label" t-esc="tax.tax_group_id.pos_receipt_label" class="me-2"/>
+                            <span t-else="" class="me-2" style="visibility: hidden;">A</span>
+                        </t>
+                        <span>
+                            <span t-esc="tax.name"/>
+                            مبلغ الضريبة
+
+                        </span>
+                        <span t-esc="props.formatCurrency(tax.amount)" class="ms-auto"/>
+                    </div>
+                </div>
+
+        <!-- Total -->
+                <div class="text-center">--------------------------------</div>
+                <div class="pos-receipt-amount">
+                    TOTAL
+                    <span t-esc="props.formatCurrency(props.data.amount_total)" class="pos-receipt-right-align"/>
+                </div>
+                <t t-if="props.data.rounding_applied">
+                    <div class="pos-receipt-amount">
+                    Rounding
+                    <span t-esc='props.formatCurrency(props.data.rounding_applied)' class="pos-receipt-right-align"/>
+                    </div>
+                    <div class="pos-receipt-amount">
+                    To Pay
+                    <span t-esc='props.formatCurrency(props.data.amount_total + props.data.rounding_applied)' class="pos-receipt-right-align"/>
+                </div>
+                </t>
+
+                <!-- Payment Lines -->
+
+                <div class="paymentlines text-start" t-foreach="props.data.paymentlines" t-as="line" t-key="line_index">
+                    <t t-esc="line.name" />
+                    <span t-esc="props.formatCurrency(line.amount)" class="pos-receipt-right-align"/>
+                </div>
+
+                <div  t-if="props.data.change != 0" class="pos-receipt-amount receipt-change">
+                    المتبقي
+                    <span t-esc="props.formatCurrency(props.data.change)" class="pos-receipt-right-align"/>
+                </div>
+
+                <!-- Extra Payment Info -->
+
+                <t t-if="props.data.total_discount">
+                    <div class="text-center">
+                        الخصم
+                        <span t-esc="props.formatCurrency(props.data.total_discount)" class="pos-receipt-right-align"/>
+                    </div>
+                </t>
+
+                <div class="before-footer" />
+
+                <div t-if="props.data.pos_qr_code">
+                    <br/>
+                    <div class="pos-receipt-order-data mb-2">
+                        Need an invoice for your purchase ?
+                    </div>
+                </div>
+
+                <div t-if="['qr_code', 'qr_code_and_url'].includes(props.data.headerData.company.point_of_sale_ticket_portal_url_display_mode) and props.data.pos_qr_code" class="mb-2">
+                    <img id="posqrcode" t-att-src="props.data.pos_qr_code" class="pos-receipt-logo"/>
+                </div>
+
+                <div t-if="props.data.pos_qr_code">
+                    <div class="pos-receipt-order-data">
+                        Unique Code: <t t-esc="props.data.ticket_code"/>
+                    </div>
+                </div>
+
+                <div t-if="['url', 'qr_code_and_url'].includes(props.data.headerData.company.point_of_sale_ticket_portal_url_display_mode) and props.data.pos_qr_code">
+                    <div class="pos-receipt-order-data" t-attf-class="{{ props.data.ticket_portal_url_display_mode === 'qr_code_and_url' ? 'mt-3' : '' }}">
+                        Portal URL: <t t-out="props.data.base_url"/>/pos/ticket
+                    </div>
+                </div>
+            </t>
+                </div>
+            </div>
+            <div class="pos-receipt-qrcode">
+                <img t-if="props.data.qr_code" id="qrcode" t-att-src="props.data.qr_code" class="pos-receipt-qrcode"/>
+            </div>
+
+        </xpath>
+    </t>
+</templates>
